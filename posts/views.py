@@ -1,6 +1,10 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.template.loader import render_to_string
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
 from posts.forms import CreateImage, CreatePost, CreateTags
 from posts.models import Images, Posts, Tags
 
@@ -74,8 +78,16 @@ def edit_posts(request, post_id):
 @login_required
 def post_like(request, pk):
     post = get_object_or_404(Posts, id=pk)
-    if request.user.profile in post.like.all():
-        post.like.remove(request.user.profile)
-    else:
-        post.like.add(request.user.profile)
-    return redirect('posts')
+    data = {}
+    liked = False
+
+    if request.method == "POST":
+        if request.user.profile in post.like.all():
+            post.like.remove(request.user.profile)
+        else:
+            post.like.add(request.user.profile)
+            liked = True
+
+    data["count"] = post.number_of_likes()
+    data["liked"] = liked
+    return JsonResponse(data)

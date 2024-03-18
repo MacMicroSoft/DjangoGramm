@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import EmailMessage
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect, render, get_object_or_404
 from django.template.loader import render_to_string
 from django.utils.encoding import force_bytes, force_str
@@ -86,10 +86,10 @@ def sign_out(request):
 
 @login_required
 def profile(request, user_id):
-    profile_data = get_object_or_404(Profile, id=user_id)
+    profile_date = get_object_or_404(Profile, id=user_id)
 
     if request.method == 'POST':
-        profile_to_follow = profile_data
+        profile_to_follow = profile_date
 
         if request.user.profile != profile_to_follow:
             if request.user.profile.follows.filter(id=user_id).exists():
@@ -97,14 +97,14 @@ def profile(request, user_id):
             else:
                 request.user.profile.follows.add(profile_to_follow)
 
-        return redirect('profile', user_id=profile_data.id)
+        return redirect('profile', user_id=profile_date.id)
 
     is_following = request.user.profile.follows.filter(id=user_id).exists()
 
-    user_data = profile_data.id
-    post_data = Posts.objects.filter(user_id=user_data).prefetch_related('images', 'tags')
+    user_date = profile_date.id
+    post_date = Posts.objects.filter(user_id=user_date).prefetch_related('images', 'tags')
 
-    return render(request, 'users/profile.html', {'post_date': post_data, 'is_following': is_following})
+    return render(request, 'users/profile.html', {'post_date': post_date, 'profile_date': profile_date, 'is_following': is_following})
 
 
 @login_required
@@ -128,20 +128,34 @@ def profile_settings(request):
 
 
 @login_required
-def profile_follow(request, user_id):
+def follow(request, user_id):
     profile = get_object_or_404(Profile, id=user_id)
-
-    followers = profile.followed_by.all()
-    following = profile.follows.all()
+    is_following = False
 
     if request.method == 'POST':
         if request.user.profile != profile:
             if request.user.profile.follows.filter(id=user_id).exists():
                 request.user.profile.follows.remove(profile)
-                return redirect('follow', user_id=request.user.profile.id)
+            else:
+                request.user.profile.follows.add(profile)
+                is_following = True
+
+    data = {
+        'is_following': is_following
+    }
+
+    return JsonResponse(data)
+
+
+
+@login_required
+def profile_follow(request, user_id):
+    profile = get_object_or_404(Profile, id=user_id)
+
+    # Retrieve the list of followed users
+    following = profile.follows.all()
 
     return render(request, 'users/follow.html', {'profile': profile, 'following': following})
-
 
 def profile_followers(request, user_id):
     profile = get_object_or_404(Profile, id=user_id)

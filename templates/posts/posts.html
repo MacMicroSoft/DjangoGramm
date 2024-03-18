@@ -8,26 +8,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Posts</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="{% static 'posts.css' %}" type="text/css">
 </head>
 <body>
-<main>
+<main class="container mt-4">
     <h2>User Posts</h2>
 
     {% for post in posts_date %}
-        <div class="post">
+        <div class="post mb-4">
             <div class="post-header">
                 <a href="{% url 'profile' user_id=post.user_id %}"><p class="username">User: {{ post.user.user }}</p></a>
                 <p class="date">{{ post.date }}</p>
             </div>
             {% for image in post.images.all %}
-                <img class="post-image" src="{{ image.get_absolute_url }}" alt="Post Image" onclick="openModal('{{ image.get_absolute_url }}')">
+                <img class="post-image img-fluid" src="{{ image.get_absolute_url }}" alt="Post Image" onclick="openModal('{{ image.get_absolute_url }}')">
             {% endfor %}
             <p class="comment">{{ post.comments }}</p>
             <div class="likes">
-                    {{ post.number_of_likes }}
-                <a href="{% url 'post_like' post.id %}"><img src="/media/icons/like_icon.png" alt="Like" class="like-icon"></a>
-                <a href="{% url 'post_like' post.id %}" class="like-link">Like</a>
+                <div>
+                    <span id="like-count-{{ post.id }}">{{ post.number_of_likes }}</span> likes
+                    <button class="like-button {% if request.user.profile in post.like.all %}liked{% endif %}" data-post-id="{{ post.id }}">Like</button>
+                </div>
             </div>
         </div>
     {% endfor %}
@@ -36,5 +38,12 @@
         <p class="no-posts">No posts available.</p>
     {% endif %}
 </main>
+
+<!-- Include jQuery and your Ajax script -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="{% static 'dist/ajax_like.js' %}"></script>
+
+
 </body>
 {% endblock %}

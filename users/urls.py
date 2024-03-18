@@ -1,7 +1,7 @@
-from users import views
 from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import include, path
+from users import views
 
 urlpatterns = [
     path('', views.home, name='home'),
@@ -9,6 +9,7 @@ urlpatterns = [
     path('logout/', views.sign_out, name='logout'),
     path('register/', views.sign_up, name='register'),
     path('profile/<int:user_id>/', views.profile, name='profile'),
+    path('follow/<int:user_id>/', views.follow, name='follow'),
     path('profile/follow/<int:user_id>/', views.profile_follow, name='follow'),
     path('profile/followers/<int:user_id>/', views.profile_followers, name='followers'),
     path('profile/settings/', views.profile_settings, name='profile_settings'),
