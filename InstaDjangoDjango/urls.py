@@ -7,6 +7,7 @@ urlpatterns = [
     path("__debug__/", include("debug_toolbar.urls")),
     path('', include('users.urls')),
     path('', include('posts.urls')),
+    path('', include('social_django.urls', namespace='social')),
     path('admin/', admin.site.urls),
 ]
 
