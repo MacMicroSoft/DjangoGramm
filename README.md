@@ -4,11 +4,12 @@ Django Gramm is a Django application that provides user registration and login f
 
 ## Features
 
-- User Registration: Users can sign up using their email address.
-- Third-Party Authentication: Users can log in using their Google or GitHub accounts.
-- User Profiles: Users can create and customize their profiles.
-- Post Creation: Users can create posts.
-- Post Interaction: Users can view posts created by other users and like them.
+- **User Registration**: Users can sign up using their email address. Account creation requires email confirmation for verification.
+- **Third-Party Authentication**: Users have the option to log in using their Google or GitHub accounts.
+- **User Profiles**: Users can create personalized profiles, providing information about themselves.
+- **Post Creation**: Users are able to create their own posts, sharing content with the community.
+- **Post Interaction**: Users can engage with posts created by others, including liking them to show appreciation or agreement.
+- **Follow/Unfollow**: Users can choose to follow or unfollow other users, enabling them to stay updated on their activities or posts.
 
 ### Installation Steps ###
 
