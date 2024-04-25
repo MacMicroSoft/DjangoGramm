@@ -35,6 +35,7 @@ Django Gramm is a Django application that provides user registration and login f
 
 ### Environment Configuration ###
 
+```plaintext
 # Set your Django secret key
 SECRET_KEY = your_secret_key
 
